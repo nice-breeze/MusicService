@@ -1,0 +1,8 @@
+/target/
+/HELP.md
+/mvnw
+/mvnw.cmd
+/.DS_Store
+/.idea/
+/src/.DS_Store
+/src/main/.DS_Store
