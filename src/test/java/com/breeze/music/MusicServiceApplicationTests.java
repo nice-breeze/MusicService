@@ -1,4 +1,4 @@
-package com.nicebreeze.music_service;
+package com.breeze.music;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

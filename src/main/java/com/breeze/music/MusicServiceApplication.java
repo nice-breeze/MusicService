@@ -1,4 +1,4 @@
-package com.nicebreeze.music_service;
+package com.breeze.music;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
