@@ -1,6 +1,7 @@
 package com.breeze.music.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -8,6 +9,7 @@ import jakarta.persistence.Table;
 @Table(name = "song")
 public class Song {
     @Id
+    @GeneratedValue
     private Long id;
 
     private String songName;
@@ -15,6 +17,21 @@ public class Song {
     private String artist;
 
     private String songUrl;
+
+    public Song(Long id, String songName, String artist, String songUrl) {
+        this(songName, artist, songUrl);
+        this.id = id;
+    }
+
+    public Song(String songName, String artist, String songUrl) {
+        this.songName = songName;
+        this.artist = artist;
+        this.songUrl = songUrl;
+    }
+
+    public Song() {
+
+    }
 
     public void setId(Long id) {
         this.id = id;

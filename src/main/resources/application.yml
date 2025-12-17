@@ -1,0 +1,18 @@
+
+spring:
+  application:
+    name: music-service
+  flyway:
+    locations: classpath:/db/migration
+    schemas: music
+    url: jdbc:postgresql://localhost:5432/postgres
+    user: flyway_user
+    password: flyway
+    baselineOnMigrate: true
+    enabled: true
+    create-schemas: true
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: my_app_user
+    password: nicebreeze
