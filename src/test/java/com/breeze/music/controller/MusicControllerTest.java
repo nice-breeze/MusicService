@@ -29,7 +29,6 @@ class MusicControllerTest {
 
     @Test
     void getSongById_ValidId_ReturnsSong() throws Exception {
-
         when(musicService.getSongById(1L))
                 .thenReturn(defaultTestSong(1L));
 
@@ -89,6 +88,66 @@ class MusicControllerTest {
                 .convertTo(Song.class)
                 .satisfies(response ->
                         assertThat(response.getId()).isEqualTo(1L));
+
+    }
+
+    @Test
+    void createSong_InvalidId_Returns400() {
+        String songToSave = "{\"guid\":\"1\",\"songName\":\"Test Song\",\"artist\":\"Test Artist\",\"songUrl\":\"https://testurl.com/song.mp3\"}";
+
+        assertThat(mockMvcTester
+                .post()
+                .content(songToSave)
+                .contentType(MediaType.APPLICATION_JSON)
+                .uri("/music/v1/songs"))
+                .hasStatus(HttpStatus.BAD_REQUEST)
+                .hasFailed()
+                .failure();
+
+    }
+
+    @Test
+    void createSong_InvalidSongName_Returns400() {
+        String songToSave = "{\"id\":\"1\",\"songTitle\":\"Test Song\",\"artist\":\"Test Artist\",\"songUrl\":\"https://testurl.com/song.mp3\"}";
+
+        assertThat(mockMvcTester
+                .post()
+                .content(songToSave)
+                .contentType(MediaType.APPLICATION_JSON)
+                .uri("/music/v1/songs"))
+                .hasStatus(HttpStatus.BAD_REQUEST)
+                .hasFailed()
+                .failure();
+
+    }
+
+    @Test
+    void createSong_InvalidArtist_Returns400() {
+        String songToSave = "{\"id\":\"1\",\"songName\":\"Test Song\",\"person\":\"Test Artist\",\"songUrl\":\"https://testurl.com/song.mp3\"}";
+
+        assertThat(mockMvcTester
+                .post()
+                .content(songToSave)
+                .contentType(MediaType.APPLICATION_JSON)
+                .uri("/music/v1/songs"))
+                .hasStatus(HttpStatus.BAD_REQUEST)
+                .hasFailed()
+                .failure();
+
+    }
+
+    @Test
+    void createSong_InvalidSongUrl_Returns400() {
+        String songToSave = "{\"id\":\"1\",\"songName\":\"Test Song\",\"artist\":\"Test Artist\",\"songUrl\":\"htt://testurl.com/song.mp3\"}";
+
+        assertThat(mockMvcTester
+                .post()
+                .content(songToSave)
+                .contentType(MediaType.APPLICATION_JSON)
+                .uri("/music/v1/songs"))
+                .hasStatus(HttpStatus.BAD_REQUEST)
+                .hasFailed()
+                .failure();
 
     }
 

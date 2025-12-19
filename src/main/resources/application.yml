@@ -2,6 +2,10 @@
 spring:
   application:
     name: music-service
+  logging:
+    level:
+      root: INFO
+      org.springframework.web: INFO
   flyway:
     locations: classpath:/db/migration
     schemas: music
@@ -16,3 +20,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: my_app_user
     password: nicebreeze
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator: true
