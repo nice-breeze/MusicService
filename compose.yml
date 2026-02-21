@@ -1,0 +1,36 @@
+# File: docker-compose.yml
+services:
+  db:
+    image: postgres:15
+    container_name: music-db-dev
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${DATASOURCE_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432" # 5433 is for your local host tools. 5432 is the internal container port.
+
+  api:
+    container_name: music-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PROFILES_ACTIVE: dev
+      DATASOURCE_URL: ${DATASOURCE_URL}
+      DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
+      FLYWAY_URL: ${FLYWAY_URL}
+      FLYWAY_USER: ${FLYWAY_USER}
+      FLYWAY_PASSWORD: ${FLYWAY_PASSWORD}
+      FLYWAY_SCHEMAS: ${FLYWAY_SCHEMAS}
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+volumes:
+  db-data:

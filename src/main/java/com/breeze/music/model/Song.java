@@ -1,12 +1,8 @@
 package com.breeze.music.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.URL;
 
 @Entity
 @Table(name = "song")
@@ -17,12 +13,14 @@ public class Song {
     private Long id;
 
     @NotNull(message = "Song name cannot be empty")
+    @Column(name = "song_name")
     private String songName;
 
     @NotNull(message = "Artist name cannot be empty")
     private String artist;
 
     @Pattern(regexp="^(http|https)://.*", message = "Song URL must be a valid HTTP URL")
+    @Column(name = "song_url")
     private String songUrl;
 
     public Song(Long id, String songName, String artist, String songUrl) {

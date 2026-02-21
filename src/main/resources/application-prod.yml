@@ -1,0 +1,33 @@
+
+spring:
+  application:
+    name: music-service
+  config:
+    activate:
+      on-profile: prod
+  logging:
+    level:
+      root: INFO
+      org.springframework.web: INFO
+  flyway:
+    locations: classpath:/db/migration
+    schemas: pomodoro
+    url: jdbc:postgresql://localhost:5432/music
+    user: flyway_user
+    password: flyway
+    baselineOnMigrate: true
+    enabled: true
+    create-schemas: true
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/music
+    username: my_app_user
+    password: nicebreeze
+  jpa:
+    hibernate:
+      ddl-auto: validate # strict validation, never change schema automatically
+    show-sql: false
+springdoc:
+  api-docs:
+    enabled: false
+  show-actuator: false

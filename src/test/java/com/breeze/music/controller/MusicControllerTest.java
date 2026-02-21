@@ -157,7 +157,7 @@ class MusicControllerTest {
 
         assertThat(mockMvcTester
                 .delete()
-                .uri("/music/v1/song/{id}", songToDeleteId))
+                .uri("/music/v1/songs/{id}", songToDeleteId))
                 .hasStatusOk()
                 .hasBodyTextEqualTo(String.format("Song id: %d deleted successfully", songToDeleteId));
     }

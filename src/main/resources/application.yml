@@ -8,18 +8,18 @@ spring:
       org.springframework.web: INFO
   flyway:
     locations: classpath:/db/migration
-    schemas: music
-    url: jdbc:postgresql://localhost:5432/postgres
-    user: flyway_user
-    password: flyway
+    schemas: ${FLYWAY_SCHEMAS:pomodoro}
+    url: ${FLYWAY_URL:jdbc:postgresql://db:5432/music}
+    user: ${FLYWAY_USER:flyway_user}
+    password: ${FLYWAY_PASSWORD:flyway}
     baselineOnMigrate: true
     enabled: true
     create-schemas: true
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: my_app_user
-    password: nicebreeze
+    url: ${DATASOURCE_URL:jdbc:postgresql://db:5432/music?currentSchema=pomodoro}
+    username: ${DATASOURCE_USERNAME:my_app_user}
+    password: ${DATASOURCE_PASSWORD:nicebreeze}
 springdoc:
   api-docs:
     enabled: true

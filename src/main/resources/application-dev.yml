@@ -1,0 +1,27 @@
+
+spring:
+  application:
+    name: music-service
+  config:
+    activate:
+      on-profile: dev
+  logging:
+    level:
+      root: DEBUG
+      org.springframework.web: INFO
+  flyway:
+    url: jdbc:postgresql://db:5432/music
+    user: flyway_user
+    password: flyway
+    schemas: pomodoro
+  datasource:
+    url: jdbc:postgresql://db:5432/music?currentSchema=pomodoro
+    username: my_app_user
+    password: my_app_user
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: pomodoro
+

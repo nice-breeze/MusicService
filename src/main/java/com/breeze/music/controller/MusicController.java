@@ -38,7 +38,7 @@ public class MusicController {
                 .body(createdSong);
     }
 
-    @DeleteMapping("/song/{id}")
+    @DeleteMapping("/songs/{id}")
     public ResponseEntity<String> deleteSong(@PathVariable Long id){
         musicService.deleteSongById(id);
 
