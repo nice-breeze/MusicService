@@ -10,18 +10,20 @@ spring:
       root: DEBUG
       org.springframework.web: INFO
   flyway:
-    url: jdbc:postgresql://db:5432/music
-    user: flyway_user
-    password: flyway
-    schemas: pomodoro
+    schemas: music
   datasource:
-    url: jdbc:postgresql://db:5432/music?currentSchema=pomodoro
+    url: jdbc:postgresql://db:5432/pomodoro?currentSchema=music
     username: my_app_user
-    password: my_app_user
+    password: nicebreeze
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        default_schema: pomodoro
+        default_schema: music
 
+
+logging:
+  level:
+    root: INFO

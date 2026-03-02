@@ -19,14 +19,10 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      PROFILES_ACTIVE: dev
+      PROFILES_ACTIVE: local
       DATASOURCE_URL: ${DATASOURCE_URL}
       DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
       DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
-      FLYWAY_URL: ${FLYWAY_URL}
-      FLYWAY_USER: ${FLYWAY_USER}
-      FLYWAY_PASSWORD: ${FLYWAY_PASSWORD}
-      FLYWAY_SCHEMAS: ${FLYWAY_SCHEMAS}
     depends_on:
       - db
     ports:

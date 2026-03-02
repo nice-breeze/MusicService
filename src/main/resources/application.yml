@@ -2,24 +2,16 @@
 spring:
   application:
     name: music-service
-  logging:
-    level:
-      root: INFO
-      org.springframework.web: INFO
   flyway:
     locations: classpath:/db/migration
-    schemas: ${FLYWAY_SCHEMAS:pomodoro}
-    url: ${FLYWAY_URL:jdbc:postgresql://db:5432/music}
-    user: ${FLYWAY_USER:flyway_user}
-    password: ${FLYWAY_PASSWORD:flyway}
-    baselineOnMigrate: true
+    schemas: music
     enabled: true
-    create-schemas: true
   datasource:
     driverClassName: org.postgresql.Driver
-    url: ${DATASOURCE_URL:jdbc:postgresql://db:5432/music?currentSchema=pomodoro}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/pomodoro?currentSchema=music}
     username: ${DATASOURCE_USERNAME:my_app_user}
     password: ${DATASOURCE_PASSWORD:nicebreeze}
+
 springdoc:
   api-docs:
     enabled: true
@@ -27,3 +19,8 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
   show-actuator: true
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework.data.jpa.repository: DEBUG
