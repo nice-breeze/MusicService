@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/music/v1")
@@ -21,7 +22,7 @@ public class MusicController {
     }
 
     @GetMapping("/songs/{id}")
-    public ResponseEntity<Song> getSongById(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<Song> getSongById(@PathVariable UUID id) throws ResourceNotFoundException {
         return ResponseEntity.ok(musicService.getSongById(id));
     }
 
@@ -39,9 +40,9 @@ public class MusicController {
     }
 
     @DeleteMapping("/songs/{id}")
-    public ResponseEntity<String> deleteSong(@PathVariable Long id){
+    public ResponseEntity<String> deleteSong(@PathVariable UUID id){
         musicService.deleteSongById(id);
 
-        return ResponseEntity.ok(String.format("Song id: %d deleted successfully", id));
+        return ResponseEntity.ok(String.format("Song id: %s deleted successfully", id));
     }
 }

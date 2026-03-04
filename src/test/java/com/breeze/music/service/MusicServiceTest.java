@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,6 +24,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class MusicServiceTest {
 
+    private static final UUID TEST_UUID = UUID.randomUUID();
+
     @Mock
     private MusicRepository musicRepository;
 
@@ -31,45 +34,46 @@ public class MusicServiceTest {
 
     @Test
     public void getAllSongs_ReturnsAllSongs(){
-        Song expectedSongOne = createSong(1L);
-        Song expectedSongTwo = createSong(2L);
+        Song expectedSongOne = createSong(TEST_UUID);
+        Song expectedSongTwo = createSong(UUID.randomUUID());
 
-        when(musicRepository.findAll()).thenReturn(List.of(expectedSongOne, expectedSongTwo));
+        when(musicRepository
+                .findAll())
+                .thenReturn(List.of(expectedSongOne, expectedSongTwo));
 
         List<Song> testSongs = musicService.getAllSongs();
 
         assertEquals(2, testSongs.size());
+        assertEquals(expectedSongOne.getId(), testSongs.get(0).getId());
+        assertEquals(expectedSongTwo.getId(), testSongs.get(1).getId());
     }
 
     @Test
     public void getSongById_ValidId_ReturnsSong() throws ResourceNotFoundException {
-        Long expectedId = 1L;
-        Song expectedSong = createSong(expectedId);
+        Song expectedSong = createSong(TEST_UUID);
 
         when(musicRepository
-                .getSongById(expectedId))
+                .getSongById(TEST_UUID))
                 .thenReturn(Optional.of(expectedSong));
 
-        Song testSong = musicService.getSongById(expectedId);
+        Song testSong = musicService.getSongById(TEST_UUID);
 
         assertEquals(expectedSong.getId(), testSong.getId());
     }
 
     @Test
-    public void getSongById_InvalidId_ThrowsException(){
-        Long expectedId = 1L;
+    public void getSongById_MissingResource_ThrowsException(){
         when(musicRepository
-                .getSongById(expectedId))
+                .getSongById(TEST_UUID))
                 .thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> musicService.getSongById(expectedId));
+        assertThrows(ResourceNotFoundException.class, () -> musicService.getSongById(TEST_UUID));
     }
 
     @Test
     public void createSong_ValidSong_SongSaved(){
-        Long expectedId = 1L;
-        Song songToSave = createSong(expectedId);
-        Song expectedSong = createSong(expectedId);
+        Song songToSave = createSong(TEST_UUID);
+        Song expectedSong = createSong(TEST_UUID);
 
         when(musicRepository
                 .save(songToSave))
@@ -82,7 +86,7 @@ public class MusicServiceTest {
 
     @Test
     public void deleteSong_ValidId_SongDeleted(){
-        Long songToDeleteId = createSong(1L).getId();
+        UUID songToDeleteId = TEST_UUID;
 
         musicService.deleteSongById(songToDeleteId);
 
@@ -99,12 +103,12 @@ public class MusicServiceTest {
                 () -> musicService.deleteSongById(null));
     }
 
-    private Song createSong(Long id){
-        return createSong(id, "Test Song", "Test Artist", "https://testurl.com/song.mp3");
+    private Song createSong(UUID id){
+        return createSong(id, "Test Song", "Test Artist", "https://testurl.com/art.png", "https://testurl.com/song.mp3");
 
     }
 
-    private Song createSong(Long id, String songName, String artist, String songUrl){
-        return new Song(id, songName, artist, songUrl);
+    private Song createSong(UUID id, String songName, String artist, String artwork, String songUrl){
+        return new Song(id, songName, artist, artwork, songUrl);
     }
 }

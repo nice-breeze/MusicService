@@ -13,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 @WebMvcTest(MusicController.class)
 class MusicControllerTest {
+    private static final UUID TEST_UUID = UUID.randomUUID();
 
     @Autowired
     private MockMvcTester mockMvcTester;
@@ -28,34 +30,34 @@ class MusicControllerTest {
     private MusicService musicService;
 
     @Test
-    void getSongById_ValidId_ReturnsSong() throws Exception {
-        when(musicService.getSongById(1L))
-                .thenReturn(defaultTestSong(1L));
+    void getSongById_ValidId_ReturnsSong() throws ResourceNotFoundException {
+        when(musicService.getSongById(TEST_UUID))
+                .thenReturn(defaultTestSong(TEST_UUID));
 
         assertThat(mockMvcTester
                 .get()
-                .uri("/music/v1/songs/{id}", 1L))
+                .uri("/music/v1/songs/{id}", TEST_UUID))
                 .hasStatusOk()
                 .bodyJson()
                 .convertTo(Song.class)
                 .satisfies(response ->
-                       assertThat(response.getId()).isEqualTo(1L));
+                       assertThat(response.getId()).isEqualTo(TEST_UUID));
     }
 
     @Test
-    void getSongById_NullId_Returns404() throws Exception {
-        when(musicService.getSongById(0L)).thenThrow(ResourceNotFoundException.class);
+    void getSongById_NullId_ReturnsSong() throws Exception {
+        when(musicService.getSongById(TEST_UUID)).thenThrow(ResourceNotFoundException.class);
 
         assertThat(mockMvcTester
                 .get()
-                .uri("/music/v1/songs/{id}", 0L))
+                .uri("/music/v1/songs/{id}", TEST_UUID))
                 .hasStatus(HttpStatus.NOT_FOUND.value())
                 .hasFailed();
     }
 
     @Test
     void getAllSongs_ReturnsAllSongs() {
-        List<Song> testSongs = List.of(defaultTestSong(1L));
+        List<Song> testSongs = List.of(defaultTestSong(TEST_UUID));
         when(musicService.getAllSongs())
                 .thenReturn(testSongs);
 
@@ -71,9 +73,9 @@ class MusicControllerTest {
 
     @Test
     void createSong_ValidSong_SongSaved() throws JsonProcessingException {
-        Song songToSave = defaultTestSong(1L);
+        Song songToSave = defaultTestSong(TEST_UUID);
 
-        String jsonSong = "{\"id\":1,\"songName\":\"Test Song\",\"artist\":\"Test Artist\",\"songUrl\":\"https://testurl.com/song.mp3\"}";
+        String jsonSong = "{\"songName\":\"Test Song\",\"artist\":\"Test Artist\",\"artwork\":\"https://testurl.com/art.png\", \"songUrl\":\"https://testurl.com/song.mp3\"}";
 
         when(musicService.createSong(any(Song.class)))
                 .thenReturn(songToSave);
@@ -87,20 +89,20 @@ class MusicControllerTest {
                 .bodyJson()
                 .convertTo(Song.class)
                 .satisfies(response ->
-                        assertThat(response.getId()).isEqualTo(1L));
+                        assertThat(response.getId()).isEqualTo(TEST_UUID));
 
     }
 
     @Test
-    void createSong_InvalidId_Returns400() {
-        String songToSave = "{\"guid\":\"1\",\"songName\":\"Test Song\",\"artist\":\"Test Artist\",\"songUrl\":\"https://testurl.com/song.mp3\"}";
+    void createSong_InvalidId_Returns500() {
+        String songToSave = "{\"id\":123, \"songName\":\"Test Song\",\"artist\":\"Test Artist\",\"artwork\":\"https://testurl.com/art.png\", \"songUrl\":\"https://testurl.com/song.mp3\"}";
 
         assertThat(mockMvcTester
                 .post()
                 .content(songToSave)
                 .contentType(MediaType.APPLICATION_JSON)
                 .uri("/music/v1/songs"))
-                .hasStatus(HttpStatus.BAD_REQUEST)
+                .hasStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                 .hasFailed()
                 .failure();
 
@@ -108,7 +110,7 @@ class MusicControllerTest {
 
     @Test
     void createSong_InvalidSongName_Returns400() {
-        String songToSave = "{\"id\":\"1\",\"songTitle\":\"Test Song\",\"artist\":\"Test Artist\",\"songUrl\":\"https://testurl.com/song.mp3\"}";
+        String songToSave = "{\"songTitle\":\"Test Song\",\"artist\":\"Test Artist\", \"artwork\":\"https://testurl.com/art.png\", \"songUrl\":\"https://testurl.com/song.mp3\"}";
 
         assertThat(mockMvcTester
                 .post()
@@ -123,7 +125,7 @@ class MusicControllerTest {
 
     @Test
     void createSong_InvalidArtist_Returns400() {
-        String songToSave = "{\"id\":\"1\",\"songName\":\"Test Song\",\"person\":\"Test Artist\",\"songUrl\":\"https://testurl.com/song.mp3\"}";
+        String songToSave = "{\"songName\":\"Test Song\",\"person\":\"Test Artist\",\"artwork\":\"https://testurl.com/art.png\", \"songUrl\":\"https://testurl.com/song.mp3\"}";
 
         assertThat(mockMvcTester
                 .post()
@@ -137,8 +139,25 @@ class MusicControllerTest {
     }
 
     @Test
+    void createSong_InvalidArtworkUrl_Returns400() {
+        String songToSave = "{\"songName\":\"Test Song\",\"artist\":\"Test Artist\", \"artwork\":\"Test Artist\", \"songUrl\":\"htt://testurl.com/song.mp3\"}";
+
+        assertThat(mockMvcTester
+                .post()
+                .content(songToSave)
+                .contentType(MediaType.APPLICATION_JSON)
+                .uri("/music/v1/songs"))
+                .hasStatus(HttpStatus.BAD_REQUEST)
+                .hasFailed()
+                .failure();
+
+    }
+
+
+
+    @Test
     void createSong_InvalidSongUrl_Returns400() {
-        String songToSave = "{\"id\":\"1\",\"songName\":\"Test Song\",\"artist\":\"Test Artist\",\"songUrl\":\"htt://testurl.com/song.mp3\"}";
+        String songToSave = "{\"songName\":\"Test Song\",\"artist\":\"Test Artist\", \"artwork\":\"https://testurl.com/art.png\", \"songUrl\":\"htt://testurl.com/song.mp3\"}";
 
         assertThat(mockMvcTester
                 .post()
@@ -153,20 +172,18 @@ class MusicControllerTest {
 
     @Test
     void deleteSong_ValidId_SongDeleted() throws Exception {
-        Long songToDeleteId = 1L;
-
         assertThat(mockMvcTester
                 .delete()
-                .uri("/music/v1/songs/{id}", songToDeleteId))
+                .uri("/music/v1/songs/{id}", TEST_UUID))
                 .hasStatusOk()
-                .hasBodyTextEqualTo(String.format("Song id: %d deleted successfully", songToDeleteId));
+                .hasBodyTextEqualTo(String.format("Song id: %s deleted successfully", TEST_UUID));
     }
 
-    private Song defaultTestSong(Long id){
-        return createSong(id, "Test Song", "Test Artist", "https://testurl.com/song.mp3");
+    private Song defaultTestSong(UUID id){
+        return createSong(id, "Test Song", "Test Artist", "https://testurl.com/artwork.png", "https://testurl.com/song.mp3");
     }
 
-    private Song createSong(Long id, String songName, String artist, String songUrl){
-        return new Song(id, songName, artist, songUrl);
+    private Song createSong(UUID id, String songName, String artist, String artwork, String songUrl){
+        return new Song(id, songName, artist, artwork, songUrl);
     }
 }

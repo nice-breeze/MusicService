@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MusicService {
@@ -32,13 +33,13 @@ public class MusicService {
         return musicRepository.findAll();
     }
 
-    public Song getSongById(Long id) throws ResourceNotFoundException {
+    public Song getSongById(UUID id) throws ResourceNotFoundException {
         Optional<Song> optionalSong = musicRepository.getSongById(id);
 
-        return optionalSong.orElseThrow(() -> new ResourceNotFoundException(String.format("Song not found with id: %d", id)));
+        return optionalSong.orElseThrow(() -> new ResourceNotFoundException(String.format("Song not found with id: %s", id)));
     }
 
-    public void deleteSongById(Long id){
+    public void deleteSongById(UUID id){
         musicRepository.deleteById(id);
     }
 

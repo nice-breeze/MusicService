@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "song")
 public class Song {
+
     @Id
-    @GeneratedValue
-    @NotNull(message = "Song id cannot be empty")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @NotNull(message = "Song name cannot be empty")
     @Column(name = "song_name")
@@ -19,14 +21,18 @@ public class Song {
     @NotNull(message = "Artist name cannot be empty")
     private String artist;
 
+    @Pattern(regexp="^(http|https)://.*", message = "Song artwork must be a valid HTTP URL")
+    private String artwork;
+
     @Pattern(regexp="^(http|https)://.*", message = "Song URL must be a valid HTTP URL")
     @Column(name = "song_url")
     private String songUrl;
 
-    public Song(Long id, String songName, String artist, String songUrl) {
+    public Song(UUID id, String songName, String artist, String artwork, String songUrl) {
         this.id = id;
         this.songName = songName;
         this.artist = artist;
+        this.artwork = artwork;
         this.songUrl = songUrl;
     }
 
@@ -34,11 +40,11 @@ public class Song {
 
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -56,6 +62,14 @@ public class Song {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public String getArtwork() {
+        return artwork;
+    }
+
+    public void setArtwork(String artwork) {
+        this.artwork = artwork;
     }
 
     public String getSongUrl() {

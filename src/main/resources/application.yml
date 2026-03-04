@@ -22,5 +22,5 @@ springdoc:
 
 logging:
   level:
-    root: DEBUG
-    org.springframework.data.jpa.repository: DEBUG
+    root: INFO
+    org.springframework.data.jpa.repository: INFO
