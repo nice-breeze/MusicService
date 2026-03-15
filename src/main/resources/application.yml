@@ -8,9 +8,9 @@ spring:
     enabled: true
   datasource:
     driverClassName: org.postgresql.Driver
-    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/pomodoro?currentSchema=music}
-    username: ${DATASOURCE_USERNAME:my_app_user}
-    password: ${DATASOURCE_PASSWORD:nicebreeze}
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
 
 springdoc:
   api-docs:
